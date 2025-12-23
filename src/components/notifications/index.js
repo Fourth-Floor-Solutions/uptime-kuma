@@ -19,6 +19,7 @@ import Gorush from "./Gorush.vue";
 import Gotify from "./Gotify.vue";
 import GrafanaOncall from "./GrafanaOncall.vue";
 import GtxMessaging from "./GtxMessaging.vue";
+import HaloPSA from "./HaloPSA.vue";
 import HomeAssistant from "./HomeAssistant.vue";
 import HeiiOnCall from "./HeiiOnCall.vue";
 import Keep from "./Keep.vue";
@@ -107,6 +108,7 @@ const NotificationFormList = {
     "gorush": Gorush,
     "gotify": Gotify,
     "GrafanaOncall": GrafanaOncall,
+    "HaloPSA": HaloPSA,
     "HomeAssistant": HomeAssistant,
     "HeiiOnCall": HeiiOnCall,
     "Keep": Keep,

@@ -124,6 +124,7 @@ export default {
                 "gorush": "Gorush",
                 "gotify": "Gotify",
                 "GrafanaOncall": "Grafana Oncall",
+                "HaloPSA": "HaloPSA",
                 "HeiiOnCall": "Heii On-Call",
                 "HomeAssistant": "Home Assistant",
                 "Keep": "Keep",
