@@ -161,29 +161,31 @@ class HaloPSA extends NotificationProvider {
 
         const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
 
-        const ticketPayload = {
-            tickets: [{
-                tickettype_id: notification.haloTicketTypeId || 1,
-                client_id: clientId,
-                summary: `[Uptime Kuma] ${monitorJSON.name} is DOWN`,
-                details: this.buildTicketDetails(monitorJSON, heartbeatJSON, "DOWN"),
-                priority_id: notification.haloPriorityId || 2,
-                status_id: notification.haloStatusIdOpen || 1,
-            }]
+        // Build the ticket object
+        const ticket = {
+            tickettype_id: notification.haloTicketTypeId || 1,
+            client_id: clientId,
+            summary: `[Uptime Kuma] ${monitorJSON.name} is DOWN`,
+            details: this.buildTicketDetails(monitorJSON, heartbeatJSON, "DOWN"),
+            priority_id: notification.haloPriorityId || 2,
+            status_id: notification.haloStatusIdOpen || 1,
         };
 
         // Add optional site_id if configured
         if (notification.haloSiteId) {
-            ticketPayload.tickets[0].site_id = notification.haloSiteId;
+            ticket.site_id = notification.haloSiteId;
         }
 
         // Add optional category if configured
         if (notification.haloCategory1) {
-            ticketPayload.tickets[0].category_1 = notification.haloCategory1;
+            ticket.category_1 = notification.haloCategory1;
         }
         if (notification.haloCategory2) {
-            ticketPayload.tickets[0].category_2 = notification.haloCategory2;
+            ticket.category_2 = notification.haloCategory2;
         }
+
+        // HaloPSA API expects an array of tickets
+        const ticketPayload = [ticket];
 
         try {
             const response = await axios.post(apiUrl, ticketPayload, {
@@ -193,8 +195,9 @@ class HaloPSA extends NotificationProvider {
                 }
             });
 
-            if (response.data && response.data.id) {
-                const ticketId = response.data.id;
+            // HaloPSA returns an array of created tickets
+            if (response.data && Array.isArray(response.data) && response.data.length > 0 && response.data[0].id) {
+                const ticketId = response.data[0].id;
 
                 // Store the ticket mapping for later closure
                 await this.storeTicket(monitorJSON.id, notification, ticketId);
@@ -223,13 +226,12 @@ class HaloPSA extends NotificationProvider {
         const token = await this.getAccessToken(notification);
         const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
 
-        const updatePayload = {
-            tickets: [{
-                id: ticketId,
-                // Add a note about continued downtime
-                note: `Monitor still DOWN at ${new Date().toISOString()}\nError: ${heartbeatJSON.msg || "Unknown error"}`
-            }]
-        };
+        // HaloPSA API expects an array of tickets
+        const updatePayload = [{
+            id: ticketId,
+            // Add a note about continued downtime
+            note: `Monitor still DOWN at ${new Date().toISOString()}\nError: ${heartbeatJSON.msg || "Unknown error"}`
+        }];
 
         try {
             await axios.post(apiUrl, updatePayload, {
@@ -257,13 +259,12 @@ class HaloPSA extends NotificationProvider {
         const token = await this.getAccessToken(notification);
         const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
 
-        const closePayload = {
-            tickets: [{
-                id: ticketId,
-                status_id: notification.haloStatusIdClosed || 9,
-                note: `Monitor recovered and is now UP. Auto-closed by Uptime Kuma at ${new Date().toISOString()}`
-            }]
-        };
+        // HaloPSA API expects an array of tickets
+        const closePayload = [{
+            id: ticketId,
+            status_id: notification.haloStatusIdClosed || 9,
+            note: `Monitor recovered and is now UP. Auto-closed by Uptime Kuma at ${new Date().toISOString()}`
+        }];
 
         try {
             await axios.post(apiUrl, closePayload, {
