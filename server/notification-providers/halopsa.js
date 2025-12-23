@@ -59,11 +59,11 @@ class HaloPSA extends NotificationProvider {
      * Get HaloPSA client ID from monitor tags or use default
      * @param {object} monitorJSON Monitor configuration
      * @param {object} notification Notification configuration
-     * @returns {Promise<number>} HaloPSA client ID
+     * @returns {Promise<number|null>} HaloPSA client ID or null if not found
      */
     async getClientId(monitorJSON, notification) {
         if (!monitorJSON || !monitorJSON.id) {
-            return notification.haloDefaultClientId;
+            return notification.haloDefaultClientId || null;
         }
 
         const tagName = notification.haloTagName || "HaloClient";
@@ -83,8 +83,8 @@ class HaloPSA extends NotificationProvider {
             log.error("halopsa", `Error fetching client ID from tags: ${error.message}`);
         }
 
-        // Fallback to default client ID
-        return notification.haloDefaultClientId;
+        // Fallback to default client ID (may be null/undefined)
+        return notification.haloDefaultClientId || null;
     }
 
     /**
@@ -154,7 +154,7 @@ class HaloPSA extends NotificationProvider {
         const clientId = await this.getClientId(monitorJSON, notification);
 
         if (!clientId) {
-            throw new Error("HaloPSA: No client ID configured. Please set haloDefaultClientId or tag the monitor with HaloClient.");
+            throw new Error(`HaloPSA: No client ID found for monitor "${monitorJSON.name}". Please tag the monitor with "${notification.haloTagName || "HaloClient"}" or set a default client ID in the notification settings.`);
         }
 
         const apiUrl = `${notification.haloTenantUrl}/api/tickets`;

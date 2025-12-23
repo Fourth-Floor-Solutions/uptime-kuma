@@ -61,17 +61,16 @@
     <h5 class="mt-4 mb-3">Ticket Configuration</h5>
 
     <div class="mb-3">
-        <label for="halo-default-client-id" class="form-label">Default Client ID</label>
+        <label for="halo-default-client-id" class="form-label">Default Client ID (Optional)</label>
         <input
             id="halo-default-client-id"
             v-model.number="$parent.notification.haloDefaultClientId"
             type="number"
             class="form-control"
-            required
             min="1"
         >
         <div class="form-text">
-            Default HaloPSA client ID for tickets. Can be overridden per monitor using tags.
+            Optional: Default HaloPSA client ID for monitors without a client tag. Leave empty to require all monitors to have a "{{ $parent.notification.haloTagName || 'HaloClient' }}" tag.
         </div>
     </div>
 
