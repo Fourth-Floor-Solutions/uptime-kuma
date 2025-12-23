@@ -238,14 +238,14 @@ class HaloPSA extends NotificationProvider {
      */
     async updateTicket(notification, ticketId, monitorJSON, heartbeatJSON) {
         const token = await this.getAccessToken(notification);
-        const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
+        const apiUrl = `${notification.haloTenantUrl}/api/tickets/${ticketId}`;
 
-        // HaloPSA API expects an array of tickets
-        const updatePayload = [{
+        // Update the specific ticket
+        const updatePayload = {
             id: ticketId,
             // Add a note about continued downtime
             note: `Monitor still DOWN at ${new Date().toISOString()}\nError: ${heartbeatJSON.msg || "Unknown error"}`
-        }];
+        };
 
         try {
             await axios.post(apiUrl, updatePayload, {
@@ -271,14 +271,14 @@ class HaloPSA extends NotificationProvider {
      */
     async closeTicket(notification, ticketId, monitorJSON) {
         const token = await this.getAccessToken(notification);
-        const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
+        const apiUrl = `${notification.haloTenantUrl}/api/tickets/${ticketId}`;
 
-        // HaloPSA API expects an array of tickets
-        const closePayload = [{
+        // Update the ticket to close it
+        const closePayload = {
             id: ticketId,
             status_id: notification.haloStatusIdClosed || 9,
             note: `Monitor recovered and is now UP. Auto-closed by Uptime Kuma at ${new Date().toISOString()}`
-        }];
+        };
 
         try {
             await axios.post(apiUrl, closePayload, {
