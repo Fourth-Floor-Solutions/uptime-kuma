@@ -90,14 +90,16 @@ class HaloPSA extends NotificationProvider {
     /**
      * Find existing HaloPSA ticket for this monitor
      * @param {number} monitorId Monitor ID
-     * @param {number} notificationId Notification ID
+     * @param {object} notification Notification configuration
      * @returns {Promise<object|null>} Ticket mapping or null
      */
-    async findTicket(monitorId, notificationId) {
+    async findTicket(monitorId, notification) {
         try {
+            // Use notification type + tenant URL as a unique key since we can't access notification.id
+            // This works because each HaloPSA instance will have a unique tenant URL
             const mapping = await R.findOne("halopsa_ticket_mapping",
-                "monitor_id = ? AND notification_id = ?",
-                [ monitorId, notificationId ]
+                "monitor_id = ? AND tenant_url = ?",
+                [ monitorId, notification.haloTenantUrl ]
             );
             return mapping;
         } catch (error) {
@@ -109,15 +111,15 @@ class HaloPSA extends NotificationProvider {
     /**
      * Store ticket mapping in database
      * @param {number} monitorId Monitor ID
-     * @param {number} notificationId Notification ID
+     * @param {object} notification Notification configuration
      * @param {number} ticketId HaloPSA ticket ID
      * @returns {Promise<void>}
      */
-    async storeTicket(monitorId, notificationId, ticketId) {
+    async storeTicket(monitorId, notification, ticketId) {
         try {
             const bean = R.dispense("halopsa_ticket_mapping");
             bean.monitor_id = monitorId;
-            bean.notification_id = notificationId;
+            bean.tenant_url = notification.haloTenantUrl;
             bean.ticket_id = ticketId;
             await R.store(bean);
         } catch (error) {
@@ -128,14 +130,14 @@ class HaloPSA extends NotificationProvider {
     /**
      * Delete ticket mapping from database
      * @param {number} monitorId Monitor ID
-     * @param {number} notificationId Notification ID
+     * @param {object} notification Notification configuration
      * @returns {Promise<void>}
      */
-    async deleteTicket(monitorId, notificationId) {
+    async deleteTicket(monitorId, notification) {
         try {
             await R.exec(
-                "DELETE FROM halopsa_ticket_mapping WHERE monitor_id = ? AND notification_id = ?",
-                [ monitorId, notificationId ]
+                "DELETE FROM halopsa_ticket_mapping WHERE monitor_id = ? AND tenant_url = ?",
+                [ monitorId, notification.haloTenantUrl ]
             );
         } catch (error) {
             log.error("halopsa", `Error deleting ticket mapping: ${error.message}`);
@@ -195,7 +197,7 @@ class HaloPSA extends NotificationProvider {
                 const ticketId = response.data.id;
 
                 // Store the ticket mapping for later closure
-                await this.storeTicket(monitorJSON.id, notification.id, ticketId);
+                await this.storeTicket(monitorJSON.id, notification, ticketId);
 
                 return `HaloPSA ticket created successfully: #${ticketId}`;
             } else {
@@ -272,7 +274,7 @@ class HaloPSA extends NotificationProvider {
             });
 
             // Delete the ticket mapping since it's now closed
-            await this.deleteTicket(monitorJSON.id, notification.id);
+            await this.deleteTicket(monitorJSON.id, notification);
 
             return `HaloPSA ticket #${ticketId} closed successfully`;
         } catch (error) {
@@ -351,7 +353,7 @@ class HaloPSA extends NotificationProvider {
 
             // Handle DOWN status - create or update ticket
             if (heartbeatJSON.status === DOWN) {
-                const existingTicket = await this.findTicket(monitorJSON.id, notification.id);
+                const existingTicket = await this.findTicket(monitorJSON.id, notification);
 
                 if (existingTicket) {
                     // Ticket already exists, add a note
@@ -373,7 +375,7 @@ class HaloPSA extends NotificationProvider {
                     return "Monitor is UP but auto-resolve is disabled";
                 }
 
-                const existingTicket = await this.findTicket(monitorJSON.id, notification.id);
+                const existingTicket = await this.findTicket(monitorJSON.id, notification);
 
                 if (existingTicket) {
                     return await this.closeTicket(

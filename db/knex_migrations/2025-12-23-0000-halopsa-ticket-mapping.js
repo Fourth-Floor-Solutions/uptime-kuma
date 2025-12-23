@@ -7,16 +7,14 @@ exports.up = function (knex) {
                 .references("id").inTable("monitor")
                 .onDelete("CASCADE")
                 .onUpdate("CASCADE");
-            table.integer("notification_id").unsigned().notNullable()
-                .references("id").inTable("notification")
-                .onDelete("CASCADE")
-                .onUpdate("CASCADE");
+            table.string("tenant_url", 255).notNullable()
+                .comment("HaloPSA tenant URL to identify which HaloPSA instance");
             table.integer("ticket_id").notNullable()
                 .comment("HaloPSA ticket ID");
             table.datetime("created_at").notNullable()
                 .defaultTo(knex.fn.now());
 
-            table.unique([ "monitor_id", "notification_id" ]);
+            table.unique([ "monitor_id", "tenant_url" ]);
         });
 };
 
