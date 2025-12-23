@@ -195,9 +195,15 @@ class HaloPSA extends NotificationProvider {
                 }
             });
 
-            // HaloPSA returns an array of created tickets
-            if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-                const ticket = response.data[0];
+            // HaloPSA can return either an array or a single object
+            let ticket;
+            if (Array.isArray(response.data) && response.data.length > 0) {
+                ticket = response.data[0];
+            } else if (response.data && typeof response.data === "object") {
+                ticket = response.data;
+            }
+
+            if (ticket) {
                 // HaloPSA may use 'id', 'ticket_id', or 'ticketId'
                 const ticketId = ticket.id || ticket.ticket_id || ticket.ticketId;
 
