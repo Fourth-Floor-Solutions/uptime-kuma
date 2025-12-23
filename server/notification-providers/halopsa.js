@@ -196,14 +196,22 @@ class HaloPSA extends NotificationProvider {
             });
 
             // HaloPSA returns an array of created tickets
-            if (response.data && Array.isArray(response.data) && response.data.length > 0 && response.data[0].id) {
-                const ticketId = response.data[0].id;
+            if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+                const ticket = response.data[0];
+                // HaloPSA may use 'id', 'ticket_id', or 'ticketId'
+                const ticketId = ticket.id || ticket.ticket_id || ticket.ticketId;
 
-                // Store the ticket mapping for later closure
-                await this.storeTicket(monitorJSON.id, notification, ticketId);
+                if (ticketId) {
+                    // Store the ticket mapping for later closure
+                    await this.storeTicket(monitorJSON.id, notification, ticketId);
 
-                return `HaloPSA ticket created successfully: #${ticketId}`;
+                    return `HaloPSA ticket created successfully: #${ticketId}`;
+                } else {
+                    log.error("halopsa", `HaloPSA API response missing ticket ID. Response: ${JSON.stringify(response.data)}`);
+                    throw new Error("HaloPSA API did not return a ticket ID");
+                }
             } else {
+                log.error("halopsa", `Unexpected HaloPSA API response format. Response: ${JSON.stringify(response.data)}`);
                 throw new Error("HaloPSA API did not return a ticket ID");
             }
         } catch (error) {
