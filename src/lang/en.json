@@ -1586,7 +1586,7 @@
     "halopsa_field_message": "Full alert message with status and details",
     "halopsa_field_timestamp": "Event timestamp in ISO 8601 format",
     "halopsa_field_uptime_kuma_version": "Uptime Kuma version number",
-    "halopsa_id_usage_hint": "💡 Tip: Use monitor_id to reliably match alerts to tickets, and heartbeat_id to track event history",
+    "halopsa_id_usage_hint": "Tip: Use monitor_id to reliably match alerts to tickets, and heartbeat_id to track event history",
     "halopsa_setup_step5": "Configure runbook to use monitor_id for matching alerts to existing tickets",
     "Teltonika SMS Gateway": "Teltonika SMS Gateway",
     "teltonikaVersionWarning": "This notification provider requires that your Teltonika device runs RMS version 7.14.0, or higher.",
