@@ -340,16 +340,14 @@ class HaloPSATickets extends NotificationProvider {
      * @returns {Promise<void>}
      */
     async addNote(notification, ticketId, html, hidden) {
-        const action = {
+        // HaloPSA rejects actions without an outcome ("An Outcome must be entered for this Action").
+        await this.api(notification, "POST", "/api/Actions", [ {
             ticket_id: parseInt(ticketId, 10),
+            outcome: notification.haloNoteOutcome || "Private Note",
             note_html: html,
             hiddenfromuser: hidden,
             who: "Uptime Kuma",
-        };
-        if (notification.haloNoteOutcome) {
-            action.outcome = notification.haloNoteOutcome;
-        }
-        await this.api(notification, "POST", "/api/Actions", [ action ]);
+        } ]);
     }
 
     /**
