@@ -11,7 +11,7 @@ This provider talks to the HaloPSA REST API itself:
 |---|---|
 | Monitor **DOWN** | OAuth2 (client credentials) → resolve client from the monitor's tag → `POST /api/Tickets` → ticket id remembered in `halopsa_ticket_mapping` |
 | Monitor **DOWN** again while its ticket is still open | Private note "reported DOWN at …" added to the same ticket (no duplicate ticket) |
-| Monitor **UP**, ticket untouched by anyone else | `POST /api/Actions` with outcome *Resolved* + closed status → ticket closed, mapping removed |
+| Monitor **UP**, ticket untouched by anyone else | `POST /api/Actions` (outcome *Resolved*, closure note) then `POST /api/Tickets` (status → closed, closeddate) → mapping removed |
 | Monitor **UP**, ticket has been actioned by a person | Ticket left open, public note "back UP at … ticket left open because …" added |
 | Ticket closed by hand in Halo, monitor goes DOWN later | Stale mapping discarded, new ticket opened |
 | **Test** button | Authenticates and reports how many active clients are visible; creates nothing |
@@ -48,6 +48,7 @@ not affect matching.
    | Custom Field ID for Monitor ID | 212 | `CFUptimeKumaMonitorID` |
    | Summary prefix | `[MONITOR DOWN]` | keeps ticket history searchable |
    | Closure outcome | `Resolved` | must exist in Halo |
+   | Note outcome | `Private Note` | HaloPSA rejects actions without an outcome; used for "back up" / "down again" notes |
 
 3. **Client mapping** – every monitor carries a tag (default name `HaloClient`) whose value is
    either the numeric Halo client id or the client's exact name (case-insensitive). Names that
@@ -76,6 +77,15 @@ Deploy on CT 232 (`/usr/share/docker-volumes/uptime-kuma/docker-compose.yml`): s
 `image: alexisskeates/uptime-kuma:halopsa-2.5.4`, then `docker compose up -d`. To move the
 image without Docker Hub: `docker save alexisskeates/uptime-kuma:halopsa-2.5.4 | gzip` on the
 build machine and `docker load` on the CT.
+
+## Verified 13 Sep 2026 (local instance against production Halo, client 158 "Fourth Floor Solutions Dev")
+
+- DOWN → ticket opened with type/priority/custom field 212 populated (tickets 132567–132571, all closed afterwards)
+- UP on an untouched ticket → Resolved note + status Closed, same action trail as the n8n workflow
+- UP on a ticket an engineer moved to In Progress → left open, visible "back UP" note; a later DOWN adds a
+  hidden "reported DOWN" note to the same ticket; a later UP notes again without closing
+- Status changes made through the API also produce hidden SLA Hold/Release actions; they carry the acting
+  application's id so they are classified correctly
 
 ## Notes
 
