@@ -418,14 +418,25 @@ class HaloPSATickets extends NotificationProvider {
         const ping = heartbeatJSON.ping ? `${heartbeatJSON.ping}ms` : "n/a";
         const note = `Monitor ${monitorJSON.name} is back UP at ${when}.<br>Response time: ${ping}<br><br>This ticket was automatically closed by Uptime Kuma.`;
 
+        const closedId = Number(notification.haloStatusIdClosed || 9);
+        const id = parseInt(ticketId, 10);
+
+        // 1. Resolution note (visible action on the ticket)
         await this.api(notification, "POST", "/api/Actions", [ {
-            ticket_id: parseInt(ticketId, 10),
+            ticket_id: id,
             outcome: notification.haloCloseOutcome || "Resolved",
-            status_id: Number(notification.haloStatusIdClosed || 9),
+            status_id: closedId,
             closure_note: note,
             note_html: note,
             who: "Uptime Kuma",
             hiddenfromuser: false,
+        } ]);
+
+        // 2. The action alone does not move the status in HaloPSA; update the ticket itself.
+        await this.api(notification, "POST", "/api/Tickets", [ {
+            id: id,
+            status_id: closedId,
+            closeddate: new Date().toISOString(),
         } ]);
 
         await this.deleteMapping(monitorJSON.id, notification);
