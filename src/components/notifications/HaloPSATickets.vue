@@ -97,9 +97,9 @@
     </div>
 
     <div class="mb-3">
-        <label for="halot-note-outcome" class="form-label">Note outcome (optional)</label>
-        <input id="halot-note-outcome" v-model="$parent.notification.haloNoteOutcome" type="text" class="form-control" placeholder="leave empty for a plain note">
-        <div class="form-text">Outcome name to stamp on informational notes ("back up", "down again"). Leave empty unless your Halo instance requires one.</div>
+        <label for="halot-note-outcome" class="form-label">Note outcome</label>
+        <input id="halot-note-outcome" v-model="$parent.notification.haloNoteOutcome" type="text" class="form-control" placeholder="Private Note">
+        <div class="form-text">Outcome name used for informational notes ("back up", "down again"). HaloPSA requires an outcome on every action; "Private Note" exists by default.</div>
     </div>
 
     <h5 class="mt-4 mb-3">Optional ticket fields</h5>
@@ -142,6 +142,7 @@ export default {
             haloStatusIdClosed: 9,
             haloSummaryPrefix: "[MONITOR DOWN]",
             haloCloseOutcome: "Resolved",
+            haloNoteOutcome: "Private Note",
             haloAutoResolve: true,
             haloKeepIfActioned: true,
         };
