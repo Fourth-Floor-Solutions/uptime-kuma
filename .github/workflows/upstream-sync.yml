@@ -1,0 +1,137 @@
+# Fourth Floor fork: keep feature/halopsa-tickets on the latest upstream 2.x release.
+#
+# Weekly (and on demand) this workflow:
+#   1. finds the newest stable 2.x tag on louislam/uptime-kuma newer than .upstream-base
+#   2. rebases this branch's commits onto that tag on a sync/upstream-<tag> branch
+#   3. installs deps, builds the frontend and the Docker image to prove it still builds
+#   4. opens a pull request into the default branch (or an issue if the rebase conflicts)
+# Nothing is deployed; merging the PR and shipping the image stays a human step.
+name: Upstream sync
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays 06:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      UPSTREAM: https://github.com/louislam/uptime-kuma.git
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out fork (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Find newest upstream 2.x release
+        id: probe
+        run: |
+          set -euo pipefail
+          git remote add upstream "$UPSTREAM"
+          git fetch upstream --tags --quiet
+          base="$(tr -d ' \n' < .upstream-base)"
+          latest="$(git tag --list '2.*' | grep -E '^2\.[0-9]+\.[0-9]+$' | sort -V | tail -1)"
+          echo "base=$base"     >> "$GITHUB_OUTPUT"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          if [ "$(printf '%s\n%s\n' "$base" "$latest" | sort -V | tail -1)" = "$base" ]; then
+            echo "Fork base $base is already the newest 2.x release ($latest). Nothing to do."
+            echo "update=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New upstream release: $base -> $latest"
+            echo "update=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip if a PR for this tag is already open
+        if: steps.probe.outputs.update == 'true'
+        id: existing
+        run: |
+          n="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "sync/upstream-${{ steps.probe.outputs.latest }}" --state open --json number --jq 'length')"
+          echo "open=$n" >> "$GITHUB_OUTPUT"
+          [ "$n" = "0" ] || echo "PR already open for ${{ steps.probe.outputs.latest }}; skipping."
+
+      - name: Rebase fork commits onto the new tag
+        if: steps.probe.outputs.update == 'true' && steps.existing.outputs.open == '0'
+        id: rebase
+        run: |
+          set -euo pipefail
+          git config user.name  "upstream-sync[bot]"
+          git config user.email "upstream-sync@users.noreply.github.com"
+          base="${{ steps.probe.outputs.base }}"; latest="${{ steps.probe.outputs.latest }}"
+          git checkout -b "sync/upstream-$latest"
+          if git rebase --onto "$latest" "$base"; then
+            echo "$latest" > .upstream-base
+            git add .upstream-base
+            git commit -m "chore: rebase fork onto upstream $latest"
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            git diff --name-only --diff-filter=U > /tmp/conflicts.txt || true
+            git rebase --abort || true
+          fi
+
+      - name: Open an issue when the rebase conflicts
+        if: steps.rebase.outputs.ok == 'false'
+        run: |
+          latest="${{ steps.probe.outputs.latest }}"
+          body="Automatic rebase of the fork commits onto upstream **$latest** hit conflicts in:\n\n\`\`\`\n$(cat /tmp/conflicts.txt)\n\`\`\`\n\nResolve locally:\n\n\`\`\`bash\ngit fetch origin --tags\ngit rebase --onto $latest ${{ steps.probe.outputs.base }} feature/halopsa-tickets\n\`\`\`\nthen update \`.upstream-base\` and push with \`--force-with-lease\`."
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "Upstream sync: rebase onto $latest needs manual resolution" --body "$(printf "$body")" --label "upstream-sync" || \
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "Upstream sync: rebase onto $latest needs manual resolution" --body "$(printf "$body")"
+          exit 1
+
+      - name: Set up Node
+        if: steps.rebase.outputs.ok == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install and build frontend
+        if: steps.rebase.outputs.ok == 'true'
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "1"
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          npx eslint server/notification-providers/halopsa-tickets.js src/components/notifications/HaloPSATickets.vue src/components/MonitorList.vue src/components/MonitorListFilter.vue
+
+      - name: Build Docker image (validation only, not pushed)
+        if: steps.rebase.outputs.ok == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/dockerfile
+          target: release
+          platforms: linux/amd64
+          push: false
+          tags: uptime-kuma:halopsa-${{ steps.probe.outputs.latest }}
+
+      - name: Push sync branch and open PR
+        if: steps.rebase.outputs.ok == 'true'
+        run: |
+          set -euo pipefail
+          latest="${{ steps.probe.outputs.latest }}"; base="${{ steps.probe.outputs.base }}"
+          git push --force-with-lease origin "sync/upstream-$latest"
+          n="$(git log --oneline "$base..$latest" | wc -l | tr -d ' ')"
+          cat > /tmp/pr-body.md <<MD
+          Rebases the fork's commits onto upstream **$latest** (was $base). $n upstream commits are pulled in.
+
+          - Diff: https://github.com/louislam/uptime-kuma/compare/$base...$latest
+          - Release notes: https://github.com/louislam/uptime-kuma/releases/tag/$latest
+
+          Checks run in CI: \`npm ci\`, frontend build, eslint on the fork's files, and a full linux/amd64 image build (not pushed).
+
+          **To ship after merging:** rebuild the image from the merged branch, load it onto CT 232, take the database backup, bump the tag in docker-compose.yml, then \`docker compose up -d\`. See HALOPSA_TICKETS.md.
+          MD
+          gh pr create --repo "$GITHUB_REPOSITORY" --base "${{ github.event.repository.default_branch }}" --head "sync/upstream-$latest" \
+            --title "Upstream sync: rebase onto $latest" --body-file /tmp/pr-body.md
