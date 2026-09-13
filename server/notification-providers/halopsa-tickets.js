@@ -22,7 +22,7 @@ class HaloPSATickets extends NotificationProvider {
     /** OAuth token cache keyed by tenant+clientId. @type {Map<string, {token: string, expiresAt: number}>} */
     static tokenCache = new Map();
 
-    /** Client name → id cache keyed by tenant. @type {Map<string, {map: Map<string, number>, loadedAt: number}>} */
+    /** Client name to id cache keyed by tenant. @type {Map<string, {map: Map<string, number>, loadedAt: number}>} */
     static clientCache = new Map();
 
     /** How long a client list stays cached (ms). */
@@ -131,7 +131,7 @@ class HaloPSATickets extends NotificationProvider {
     }
 
     /**
-     * Load (or reuse) the tenant's client list as a lower-case name → id map.
+     * Load (or reuse) the tenant's client list as a lower-case name to id map.
      * @param {object} notification Notification config
      * @param {boolean} force Bypass the cache
      * @returns {Promise<Map<string, number>>} name map
