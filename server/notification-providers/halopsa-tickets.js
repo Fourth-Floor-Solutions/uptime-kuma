@@ -78,9 +78,10 @@ class HaloPSATickets extends NotificationProvider {
      * @param {string} method HTTP method
      * @param {string} path API path beginning with /api/
      * @param {?object} data Request body
+     * @param {boolean} retry Retry once with a fresh token on 401/403
      * @returns {Promise<object>} Axios response
      */
-    async api(notification, method, path, data = null) {
+    async api(notification, method, path, data = null, retry = true) {
         const token = await this.getAccessToken(notification);
         const config = this.getAxiosConfigWithProxy({
             method,
@@ -94,7 +95,20 @@ class HaloPSATickets extends NotificationProvider {
         if (data !== null) {
             config.data = data;
         }
-        return axios(config);
+        try {
+            return await axios(config);
+        } catch (e) {
+            const status = e.response && e.response.status;
+            // HaloPSA encodes the agent's permissions in the token. If permissions were
+            // changed after the token was cached, drop it and try once with a fresh one.
+            if (retry && (status === 401 || status === 403)) {
+                const cacheKey = `${this.tenant(notification)}|${notification.haloClientId}`;
+                HaloPSATickets.tokenCache.delete(cacheKey);
+                log.warn("halopsa-tickets", `HTTP ${status} on ${method} ${path}; retrying once with a fresh token`);
+                return this.api(notification, method, path, data, false);
+            }
+            throw e;
+        }
     }
 
     /**
