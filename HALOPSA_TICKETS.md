@@ -93,3 +93,22 @@ build machine and `docker load` on the CT.
   for one hour and refreshed once on a miss.
 - `halopsa_ticket_mapping` rows are unique per (monitor, tenant). Deleting a monitor cascades.
 - The provider never deletes or reopens tickets.
+
+## Other changes in this fork
+
+- **Monitor list ordering by status band** (`src/components/MonitorList.vue`, `MonitorListFilter.vue`):
+  down first, then pending, then up, then maintenance, paused at the bottom; alphabetical (after
+  weight) within each band, for the top-level list and for children inside groups. Toggle button
+  next to the collapse-all control, default on, remembered per browser (`localStorage`
+  `monitorSortByStatus`).
+- **Legacy migration names** (`db/knex_migrations/2025-12-23-*`): guarded no-ops so databases that ran
+  the Dec-2025 fork still pass knex's migration-list validation.
+
+## HaloPSA agent for the integration
+
+Create a dedicated API agent (Configuration › Teams & Agents › Agents; "API agent", no licence) and
+point the API application at it ("Agent to log in as"). It needs, at minimum, permission to read
+clients, read/create/update tickets and add actions; copying the permission set from an existing
+integration agent (e.g. the Safe Send agent) is the quickest route. Halo embeds permissions in the
+OAuth token, so after changing them the provider's cached token is refreshed automatically on the
+next 401/403.
