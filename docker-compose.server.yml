@@ -1,0 +1,15 @@
+services:
+  uptime-kuma:
+    image: alexisskeates/uptime-kuma:halopsa
+    container_name: uptime-kuma
+    volumes:
+      - ./data:/app/data
+    networks:
+      - proxy
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+networks:
+  proxy:
+    driver: bridge

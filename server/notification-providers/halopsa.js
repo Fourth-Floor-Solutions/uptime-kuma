@@ -205,9 +205,15 @@ class HaloPSA extends NotificationProvider {
 
             if (ticket) {
                 // HaloPSA may use 'id', 'ticket_id', or 'ticketId'
-                const ticketId = ticket.id || ticket.ticket_id || ticket.ticketId;
+                // Log the raw response to debug ID format
+                log.info("halopsa", `Ticket creation response: ${JSON.stringify(ticket)}`);
 
-                if (ticketId) {
+                const rawId = ticket.id || ticket.ticket_id || ticket.ticketId;
+                // Convert to string and pad with leading zero to match HaloPSA format (0XXXXXX - 7 digits)
+                const ticketId = String(rawId).padStart(7, '0');
+
+                if (ticketId && ticketId !== "undefined") {
+                    log.info("halopsa", `Storing ticket ID: ${ticketId} (raw: ${rawId})`);
                     // Store the ticket mapping for later closure
                     await this.storeTicket(monitorJSON.id, notification, ticketId);
 
@@ -238,14 +244,20 @@ class HaloPSA extends NotificationProvider {
      */
     async updateTicket(notification, ticketId, monitorJSON, heartbeatJSON) {
         const token = await this.getAccessToken(notification);
-        const apiUrl = `${notification.haloTenantUrl}/api/tickets/${ticketId}`;
+        const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
+        const clientId = await this.getClientId(monitorJSON, notification);
 
-        // Update the specific ticket
-        const updatePayload = {
-            id: ticketId,
-            // Add a note about continued downtime
+        // Update the specific ticket - HaloPSA requires array format for POST
+        // HaloPSA requires: id, client_id, tickettype_id, status_id, summary, details
+        const updatePayload = [{
+            id: parseInt(ticketId),
+            client_id: clientId,
+            tickettype_id: notification.haloTicketTypeId || 1,
+            status_id: notification.haloStatusIdOpen || 1,
+            summary: `[Uptime Kuma] ${monitorJSON.name} is DOWN`,
+            details: `Monitor still DOWN at ${new Date().toISOString()}\nError: ${heartbeatJSON.msg || "Unknown error"}`,
             note: `Monitor still DOWN at ${new Date().toISOString()}\nError: ${heartbeatJSON.msg || "Unknown error"}`
-        };
+        }];
 
         try {
             await axios.post(apiUrl, updatePayload, {
@@ -271,14 +283,20 @@ class HaloPSA extends NotificationProvider {
      */
     async closeTicket(notification, ticketId, monitorJSON) {
         const token = await this.getAccessToken(notification);
-        const apiUrl = `${notification.haloTenantUrl}/api/tickets/${ticketId}`;
+        const apiUrl = `${notification.haloTenantUrl}/api/tickets`;
+        const clientId = await this.getClientId(monitorJSON, notification);
 
-        // Update the ticket to close it
-        const closePayload = {
-            id: ticketId,
-            status_id: notification.haloStatusIdClosed || 9,
-            note: `Monitor recovered and is now UP. Auto-closed by Uptime Kuma at ${new Date().toISOString()}`
-        };
+        // Update the ticket to close it - HaloPSA requires array format for POST
+        // HaloPSA expects string values for id and status_id (not integers)
+        const closePayload = [{
+            id: String(ticketId).replace(/^0+/, ''),  // Remove leading zeros, keep as string
+            status_id: String(notification.haloStatusIdClosed || 9),
+            apply_rules: true,
+            utcoffset: 0,
+            _refreshresponse: true
+        }];
+
+        log.info("halopsa", `Attempting to close ticket. Payload: ${JSON.stringify(closePayload)}`);
 
         try {
             await axios.post(apiUrl, closePayload, {
