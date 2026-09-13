@@ -1541,6 +1541,7 @@
     "Clear current filters": "Clear current filters",
     "Sort options": "Sort options",
     "Sort by status": "Sort by status",
+    "sortByStatusHint": "Down first, then pending, then up; alphabetical within each",
     "Sort by name": "Sort by name",
     "Sort by uptime": "Sort by uptime",
     "Sort by certificate expiry": "Sort by certificate expiry",
