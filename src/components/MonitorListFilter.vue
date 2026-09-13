@@ -158,6 +158,16 @@
     >
         <font-awesome-icon :icon="allCollapsed ? 'folder' : 'folder-open'" fixed-width />
     </button>
+    <button
+        type="button"
+        class="btn btn-outline-normal btn-sort-status"
+        :class="{ active: sortByStatus }"
+        :title="$t('Sort by status') + ': ' + (sortByStatus ? $t('enabled') : $t('disabled')) + '. ' + $t('sortByStatusHint')"
+        :aria-pressed="sortByStatus ? 'true' : 'false'"
+        @click="$emit('toggle-sort-by-status')"
+    >
+        <font-awesome-icon icon="arrows-alt-v" fixed-width />
+    </button>
 </template>
 
 <script>
@@ -184,8 +194,12 @@ export default {
             type: Boolean,
             default: false,
         },
+        sortByStatus: {
+            type: Boolean,
+            default: true,
+        },
     },
-    emits: ["updateFilter", "toggle-collapse-all"],
+    emits: ["updateFilter", "toggle-collapse-all", "toggle-sort-by-status"],
     data() {
         return {
             tagsList: [],
@@ -352,7 +366,8 @@ export default {
     }
 }
 
-.btn-collapse-all {
+.btn-collapse-all,
+.btn-sort-status {
     transition: none !important;
 }
 
