@@ -39,8 +39,10 @@
                         :filterState="filterState"
                         :allCollapsed="allGroupsCollapsed"
                         :hasGroups="groupMonitors.length >= 2"
+                        :sortByStatus="sortByStatus"
                         @update-filter="updateFilter"
                         @toggle-collapse-all="toggleCollapseAll"
+                        @toggle-sort-by-status="toggleSortByStatus"
                     />
                 </div>
             </div>
@@ -135,6 +137,21 @@ import MonitorListItem from "../components/MonitorListItem.vue";
 import MonitorListFilter from "./MonitorListFilter.vue";
 import { getMonitorRelativeURL } from "../util.ts";
 
+const SORT_BY_STATUS_KEY = "monitorSortByStatus";
+
+/**
+ * Read the persisted status-band ordering preference (default: on).
+ * @returns {boolean} true when the list should be ordered by status band
+ */
+function loadSortByStatus() {
+    try {
+        const v = window.localStorage.getItem(SORT_BY_STATUS_KEY);
+        return v === null ? true : v === "1";
+    } catch (e) {
+        return true;
+    }
+}
+
 export default {
     components: {
         Confirm,
@@ -162,6 +179,7 @@ export default {
                 tags: null,
             },
             collapseKey: 0,
+            sortByStatus: loadSortByStatus(),
         };
     },
     computed: {
@@ -594,10 +612,12 @@ export default {
 
             // Status bands: down (red) first, then pending (orange), then up (green),
             // then maintenance. Each band keeps the weight + alphabetical order below.
-            const r1 = this.statusRank(m1);
-            const r2 = this.statusRank(m2);
-            if (r1 !== r2) {
-                return r1 - r2;
+            if (this.sortByStatus) {
+                const r1 = this.statusRank(m1);
+                const r2 = this.statusRank(m2);
+                if (r1 !== r2) {
+                    return r1 - r2;
+                }
             }
 
             if (m1.weight !== m2.weight) {
@@ -611,6 +631,19 @@ export default {
             }
 
             return m1.name.localeCompare(m2.name);
+        },
+
+        /**
+         * Flip the status-band ordering on/off and remember it in this browser.
+         * @returns {void}
+         */
+        toggleSortByStatus() {
+            this.sortByStatus = !this.sortByStatus;
+            try {
+                window.localStorage.setItem(SORT_BY_STATUS_KEY, this.sortByStatus ? "1" : "0");
+            } catch (e) {
+                // storage unavailable (private mode etc.) - keep in-memory value only
+            }
         },
 
         /**
