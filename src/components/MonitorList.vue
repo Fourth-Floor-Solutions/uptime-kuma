@@ -129,6 +129,7 @@
 </template>
 
 <script>
+import { DOWN, UP, PENDING, MAINTENANCE } from "../util.ts";
 import Confirm from "../components/Confirm.vue";
 import MonitorListItem from "../components/MonitorListItem.vue";
 import MonitorListFilter from "./MonitorListFilter.vue";
@@ -591,6 +592,14 @@ export default {
                 }
             }
 
+            // Status bands: down (red) first, then pending (orange), then up (green),
+            // then maintenance. Each band keeps the weight + alphabetical order below.
+            const r1 = this.statusRank(m1);
+            const r2 = this.statusRank(m2);
+            if (r1 !== r2) {
+                return r1 - r2;
+            }
+
             if (m1.weight !== m2.weight) {
                 if (m1.weight > m2.weight) {
                     return -1;
@@ -602,6 +611,32 @@ export default {
             }
 
             return m1.name.localeCompare(m2.name);
+        },
+
+        /**
+         * Rank a monitor by its latest heartbeat status for list ordering.
+         * Lower sorts first: DOWN 0, PENDING 1, UP 2, MAINTENANCE 3, unknown 4.
+         * Groups carry their own heartbeat, so a group with a failing child ranks as DOWN.
+         * @param {object} monitor Monitor object from the monitor list
+         * @returns {number} sort rank
+         */
+        statusRank(monitor) {
+            const beat = this.$root.lastHeartbeatList[monitor.id];
+            if (!beat) {
+                return 4;
+            }
+            switch (beat.status) {
+                case DOWN:
+                    return 0;
+                case PENDING:
+                    return 1;
+                case UP:
+                    return 2;
+                case MAINTENANCE:
+                    return 3;
+                default:
+                    return 4;
+            }
         },
     },
 };
