@@ -223,6 +223,7 @@ export default {
                 gotify: "Gotify",
                 GrafanaOncall: "Grafana Oncall",
                 HaloPSA: "Halo PSA",
+                HaloPSATickets: "Halo PSA Tickets (open / close)",
                 HeiiOnCall: "Heii On-Call",
                 HomeAssistant: "Home Assistant",
                 Keep: "Keep",
