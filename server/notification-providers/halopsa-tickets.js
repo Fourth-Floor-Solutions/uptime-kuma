@@ -1,5 +1,6 @@
 const NotificationProvider = require("./notification-provider");
 const axios = require("axios");
+const dayjs = require("dayjs");
 const { R } = require("redbean-node");
 const { UP, DOWN, log } = require("../../src/util");
 
@@ -418,17 +419,82 @@ class HaloPSATickets extends NotificationProvider {
     }
 
     /**
+     * Human readable duration, e.g. "2 hours 5 minutes 10 seconds".
+     * @param {number} seconds Duration in seconds
+     * @returns {string} formatted duration
+     */
+    formatDuration(seconds) {
+        seconds = Math.max(0, Math.round(seconds));
+        const d = Math.floor(seconds / 86400);
+        const h = Math.floor((seconds % 86400) / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const sec = seconds % 60;
+        const parts = [];
+        if (d) {
+            parts.push(`${d} day${d === 1 ? "" : "s"}`);
+        }
+        if (h) {
+            parts.push(`${h} hour${h === 1 ? "" : "s"}`);
+        }
+        if (m) {
+            parts.push(`${m} minute${m === 1 ? "" : "s"}`);
+        }
+        if (sec || parts.length === 0) {
+            parts.push(`${sec} second${sec === 1 ? "" : "s"}`);
+        }
+        return parts.join(" ");
+    }
+
+    /**
+     * Format a UTC database timestamp in the server timezone.
+     * @param {string} utcTime "YYYY-MM-DD HH:mm:ss" in UTC
+     * @param {string} timezone IANA timezone name from the heartbeat
+     * @returns {string} local time string with zone suffix
+     */
+    localTime(utcTime, timezone) {
+        try {
+            return `${dayjs.utc(utcTime).tz(timezone).format("YYYY-MM-DD HH:mm:ss")} ${timezone}`;
+        } catch (e) {
+            return `${utcTime} UTC`;
+        }
+    }
+
+    /**
+     * Outage summary lines for an UP heartbeat: when it went down, when it came back, total time.
+     * Uses the DOWN transition time Uptime Kuma attaches to the UP heartbeat, falling back to the
+     * time the ticket was opened.
+     * @param {object} heartbeatJSON UP heartbeat
+     * @param {?object} mapping halopsa_ticket_mapping row (for the fallback)
+     * @returns {string} HTML fragment
+     */
+    outageSummary(heartbeatJSON, mapping) {
+        const downUtc = heartbeatJSON.lastDownTime || (mapping && mapping.created_at) || null;
+        const upUtc = heartbeatJSON.time;
+        if (!downUtc || !upUtc) {
+            return "";
+        }
+        const tz = heartbeatJSON.timezone || "UTC";
+        const total = this.formatDuration(dayjs.utc(upUtc).unix() - dayjs.utc(downUtc).unix());
+        return `Connection went down at: ${this.localTime(downUtc, tz)}<br>`
+            + `Connection came up at: ${this.localTime(upUtc, tz)}<br>`
+            + `Total outage time: ${total}`;
+    }
+
+    /**
      * Close a ticket after the monitor recovers.
      * @param {object} notification Notification config
      * @param {string|number} ticketId Halo ticket id
      * @param {object} monitorJSON Monitor details
      * @param {object} heartbeatJSON Heartbeat details
+     * @param {?object} mapping Ticket mapping row (fallback for the outage start time)
      * @returns {Promise<string>} Result message
      */
-    async closeTicket(notification, ticketId, monitorJSON, heartbeatJSON) {
-        const when = heartbeatJSON.localDateTime || new Date().toISOString();
+    async closeTicket(notification, ticketId, monitorJSON, heartbeatJSON, mapping = null) {
         const ping = heartbeatJSON.ping ? `${heartbeatJSON.ping}ms` : "n/a";
-        const note = `Monitor ${monitorJSON.name} is back UP at ${when}.<br>Response time: ${ping}<br><br>This ticket was automatically closed by Uptime Kuma.`;
+        const summary = this.outageSummary(heartbeatJSON, mapping);
+        const note = `Monitor ${monitorJSON.name} is back UP.<br>`
+            + (summary ? `${summary}<br>` : "")
+            + `Response time: ${ping}<br><br>This ticket was automatically closed by Uptime Kuma.`;
 
         const closedId = Number(notification.haloStatusIdClosed || 9);
         const id = parseInt(ticketId, 10);
@@ -511,14 +577,16 @@ class HaloPSATickets extends NotificationProvider {
                 if (notification.haloKeepIfActioned !== false) {
                     const verdict = await this.wasActionedByOthers(notification, mapping.ticket_id);
                     if (verdict.actioned) {
-                        const when = heartbeatJSON.localDateTime || new Date().toISOString();
-                        const note = `Monitor ${monitorJSON.name} is back UP at ${when}.<br>Ticket left open because it has been actioned (${verdict.reason}).`;
+                        const summary = this.outageSummary(heartbeatJSON, mapping);
+                        const note = `Monitor ${monitorJSON.name} is back UP.<br>`
+                            + (summary ? `${summary}<br>` : "")
+                            + `Ticket left open because it has been actioned (${verdict.reason}).`;
                         await this.addNote(notification, mapping.ticket_id, note, false);
                         log.info("halopsa-tickets", `Ticket ${mapping.ticket_id} left open for monitor ${monitorJSON.id}: ${verdict.reason}`);
                         return `HaloPSA ticket #${mapping.ticket_id} left open (${verdict.reason}); UP note added`;
                     }
                 }
-                return this.closeTicket(notification, mapping.ticket_id, monitorJSON, heartbeatJSON);
+                return this.closeTicket(notification, mapping.ticket_id, monitorJSON, heartbeatJSON, mapping);
             }
 
             return "HaloPSA Tickets: heartbeat status not UP/DOWN, ignored";
