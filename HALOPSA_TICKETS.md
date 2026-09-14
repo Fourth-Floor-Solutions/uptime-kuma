@@ -104,6 +104,14 @@ build machine and `docker load` on the CT.
 - **Legacy migration names** (`db/knex_migrations/2025-12-23-*`): guarded no-ops so databases that ran
   the Dec-2025 fork still pass knex's migration-list validation.
 
+- **No emoji policy** (`extra/strip-emoji.js`): removes emoji/pictographs from every text file and
+  turns arrows into "->". The result is committed as a single commit whose subject carries
+  `[strip-emoji]`; the sync workflow drops that commit before rebasing onto a new upstream tag and
+  re-creates it afterwards, so it never conflicts. Manual rebase: drop it the same way
+  (`GIT_SEQUENCE_EDITOR="sed -i '/\[strip-emoji\]/d'" git rebase -i --onto <tag> <old>`), then
+  `node extra/strip-emoji.js && git commit -am "chore: strip emoji [strip-emoji]"`.
+  `node extra/strip-emoji.js --check` exits non-zero if anything would change.
+
 ## HaloPSA agent for the integration
 
 Create a dedicated API agent (Configuration › Teams & Agents › Agents; "API agent", no licence) and
