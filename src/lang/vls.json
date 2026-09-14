@@ -767,9 +767,9 @@
     "Deploy a Google Apps Script as a web app and paste the URL here": "Publiceer een Google Apps script als web app en plak de URL hier",
     "Quick Setup Guide": "Snelstartgids",
     "Open your Google Spreadsheet": "Open ge Google Spreadsheet",
-    "Go to Extensions → Apps Script": "Ga naar extensies → Apps Script",
+    "Go to Extensions -> Apps Script": "Ga naar extensies -> Apps Script",
     "Paste the script code (see below)": "Plak de script code (zie onderstaand)",
-    "Click Deploy → New deployment → Web app": "Klik op Deploy → New deployment → Web app",
+    "Click Deploy -> New deployment -> Web app": "Klik op Deploy -> New deployment -> Web app",
     "Set 'Execute as: Me' and 'Who has access: Anyone'": "Stel 'Uitvoeren als: mij' en 'Wie heeft toegang: Iedereen' in",
     "Copy the web app URL and paste it above": "Kopieer de web app URL en plak deze hierboven",
     "Google Apps Script Code": "Google apps script code",
@@ -1405,7 +1405,7 @@
     "maxPing": "Max ping",
     "minPing": "Min ping",
     "Setup Instructions": "Instel-instructies",
-    "halopsa_setup_step1": "Maak een integratie runbook in HaloPSA (Configuration → Integrations → Integration Runbooks)",
+    "halopsa_setup_step1": "Maak een integratie runbook in HaloPSA (Configuration -> Integrations -> Integration Runbooks)",
     "halopsa_setup_step2": "Configureer runbook acties om meldingen te verwerken (bijv. Maak ticket)",
     "halopsa_setup_step3": "Kopieer de webhook URL en plak deze in het bovenstaande tekstveld",
     "halopsa_setup_step4": "Kies basis authenticatie en maak een gebruikersnaam en wachtwoord. En typ of plak de gebruikersnaam en wachtwoord in bovenstaande velden",
@@ -1453,5 +1453,5 @@
     "halopsa_field_message": "Volledige meldtekst met status en details",
     "halopsa_field_timestamp": "Event tijdstempel in ISO 8601 formaat",
     "halopsa_field_uptime_kuma_version": "Uptime Kuma versienummer",
-    "halopsa_id_usage_hint": "💡 Tip: Gebruik monitor_id om waarschuwingen betrouwbaar te koppelen aan tickets, en heartbeat_id om de gebeurtenisgeschiedenis bij te houden"
+    "halopsa_id_usage_hint": "Tip: Gebruik monitor_id om waarschuwingen betrouwbaar te koppelen aan tickets, en heartbeat_id om de gebeurtenisgeschiedenis bij te houden"
 }

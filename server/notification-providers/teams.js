@@ -15,9 +15,9 @@ class Teams extends NotificationProvider {
      */
     _statusMessageFactory = (status, monitorName, withStatusSymbol) => {
         if (status === DOWN) {
-            return (withStatusSymbol ? "🔴 " : "") + `[${monitorName}] went down`;
+            return (withStatusSymbol ? "" : "") + `[${monitorName}] went down`;
         } else if (status === UP) {
-            return (withStatusSymbol ? "✅ " : "") + `[${monitorName}] is back online`;
+            return (withStatusSymbol ? "" : "") + `[${monitorName}] is back online`;
         }
         return "Notification";
     };

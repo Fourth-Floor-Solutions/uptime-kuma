@@ -24,7 +24,7 @@ jobs:
         with:
           pr-reactions: rocket
           pr-opened-msg: >
-            Hello and thanks for lending a paw to Uptime Kuma! 🐻👋
+            Hello and thanks for lending a paw to Uptime Kuma!
 
             As this is your first contribution, please be sure to check out our [Pull Request guidelines](https://github.com/louislam/uptime-kuma/blob/master/CONTRIBUTING.md#can-i-create-a-pull-request-for-uptime-kuma).
 
@@ -34,7 +34,7 @@ jobs:
 
             If you have any design or process questions, feel free to ask them right here in this pull request - unclear documentation is a bug too.
           pr-merged-msg: >
-            @{fc-author} congrats on your first contribution to Uptime Kuma! 🐻
+            @{fc-author} congrats on your first contribution to Uptime Kuma!
 
             We hope you enjoy contributing to our project and look forward to seeing more of your work in the future!
             If you want to see your contribution in action, please see our [nightly builds here](https://hub.docker.com/layers/louislam/uptime-kuma/nightly2).

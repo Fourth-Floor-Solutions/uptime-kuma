@@ -38,7 +38,7 @@ class Line extends NotificationProvider {
                         {
                             type: "text",
                             text:
-                                "UptimeKuma Alert: [🔴 Down]\n" +
+                                "UptimeKuma Alert: [Down]\n" +
                                 "Name: " +
                                 monitorJSON["name"] +
                                 " \n" +
@@ -55,7 +55,7 @@ class Line extends NotificationProvider {
                         {
                             type: "text",
                             text:
-                                "UptimeKuma Alert: [✅ Up]\n" +
+                                "UptimeKuma Alert: [Up]\n" +
                                 "Name: " +
                                 monitorJSON["name"] +
                                 " \n" +
