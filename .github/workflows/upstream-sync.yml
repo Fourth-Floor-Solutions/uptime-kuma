@@ -70,10 +70,20 @@ jobs:
           git config user.email "upstream-sync@users.noreply.github.com"
           base="${{ steps.probe.outputs.base }}"; latest="${{ steps.probe.outputs.latest }}"
           git checkout -b "sync/upstream-$latest"
-          if git rebase --onto "$latest" "$base"; then
+          # Drop the tree-wide "[strip-emoji]" commit(s) before replaying: they touch upstream
+          # lines and would conflict. The strip is re-applied by extra/strip-emoji.js below.
+          if GIT_SEQUENCE_EDITOR="sed -i '/\[strip-emoji\]/d'" git rebase -i --onto "$latest" "$base"; then
             echo "$latest" > .upstream-base
             git add .upstream-base
             git commit -m "chore: rebase fork onto upstream $latest"
+            node extra/strip-emoji.js
+            changed="$(git diff --name-only | grep -E '\.(js|vue)$' || true)"
+            if [ -n "$changed" ]; then
+              npm ci --no-audit --no-fund >/dev/null 2>&1 || true
+              echo "$changed" | xargs npx eslint --no-warn-ignored
+            fi
+            git add -A
+            git commit -m "chore: strip emoji from upstream files [strip-emoji]" || echo "nothing to strip"
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"
