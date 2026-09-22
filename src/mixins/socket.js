@@ -737,7 +737,7 @@ export default {
             if (typeof this.username == "string" && this.username.length >= 1) {
                 return this.username.charAt(0).toUpperCase();
             } else {
-                return "🐻";
+                return "";
             }
         },
 

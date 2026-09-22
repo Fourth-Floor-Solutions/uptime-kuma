@@ -1,5 +1,5 @@
 ---
-name: 🐛 Bug Report
+name: Bug Report
 description: |
   Submit a bug report to help us improve
 #title: "[Bug]"
@@ -8,14 +8,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        🚫 **We kindly ask you to refrain from pinging maintainers unless absolutely necessary. Pings are reserved for critical/urgent issues that require immediate attention.**
+        **We kindly ask you to refrain from pinging maintainers unless absolutely necessary. Pings are reserved for critical/urgent issues that require immediate attention.**
 
   - type: textarea
     id: related-issues
     validations:
       required: true
     attributes:
-      label: 📑 I have found these related issues/pull requests
+      label: I have found these related issues/pull requests
       description: |
         Please search for related **[ISSUES](https://github.com/louislam/uptime-kuma/issues?q=is%3Aissue%20sort%3Acreated-desc)**
         and **[PULL REQUESTS](https://github.com/louislam/uptime-kuma/pulls?q=is%3Apr+sort%3Acreated-desc+)**.
@@ -26,7 +26,7 @@ body:
   - type: checkboxes
     id: security-policy
     attributes:
-      label: 🛡️ Security Policy
+      label: Security Policy
       description: |
         Please review and acknowledge the Security Policy before reporting any security-related issues or bugs. You can find the full Security Policy **[HERE](https://github.com/louislam/uptime-kuma/security/policy)**.
       options:
@@ -39,7 +39,7 @@ body:
     validations:
       required: false
     attributes:
-      label: 📝 Description
+      label: Description
       description: |
         You could also upload screenshots
 
@@ -48,7 +48,7 @@ body:
     validations:
       required: true
     attributes:
-      label: 👟 Reproduction steps
+      label: Reproduction steps
       description: |
         How do you trigger this bug? Please walk us through it step by step. Include all important details and add screenshots where appropriate
       placeholder: |
@@ -59,7 +59,7 @@ body:
     validations:
       required: true
     attributes:
-      label: 👀 Expected behavior
+      label: Expected behavior
       description: |
         What did you think would happen?
       placeholder: |
@@ -70,7 +70,7 @@ body:
     validations:
       required: true
     attributes:
-      label: 😓 Actual Behavior
+      label: Actual Behavior
       description: |
         What actually happen?
       placeholder: |
@@ -79,7 +79,7 @@ body:
   - type: input
     id: uptime-kuma-version
     attributes:
-      label: 🐻 Uptime-Kuma Version
+      label: Uptime-Kuma Version
       description: |
         What version of Uptime-Kuma are you running? Please do not provide Docker tags like `latest` or `1`.
       placeholder: |
@@ -90,7 +90,7 @@ body:
   - type: input
     id: operating-system
     attributes:
-      label: 💻 Operating System and Arch
+      label: Operating System and Arch
       description: |
         Which OS is your server/device running on? (For Replit, please do not
         report this bug)
@@ -102,7 +102,7 @@ body:
   - type: input
     id: browser-vendor
     attributes:
-      label: 🌐 Browser
+      label: Browser
       description: |
         Which browser are you running on?
       placeholder: |
@@ -113,7 +113,7 @@ body:
   - type: textarea
     id: deployment-info
     attributes:
-      label: 🖥️ Deployment Environment
+      label: Deployment Environment
       description: |
         Provide details about the deployment environment, including runtime components, databases, and storage configurations. This will
         help assess the infrastructure and identify any potential compatibility requirements.
@@ -144,7 +144,7 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: 📝 Relevant log output
+      label: Relevant log output
       description: |
         Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
       render: bash session

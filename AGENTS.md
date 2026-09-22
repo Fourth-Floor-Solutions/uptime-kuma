@@ -1,6 +1,6 @@
 # Consequences of AI Slop
 
-- In your GitHub profile, there will be a pull request with title "[🚨⚠️AI Slop⚠️🚨] WARNING: THIS GUY CREATED AI SLOP, DO NOT TRUST! ", and you will not able to remove it!
+- In your GitHub profile, there will be a pull request with title "[AI Slop] WARNING: THIS GUY CREATED AI SLOP, DO NOT TRUST! ", and you will not able to remove it!
 - BANNED to access our GitHUB repos
 
 If you don't want to, please read the following instructions carefully.

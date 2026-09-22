@@ -13,9 +13,9 @@ class ZohoCliq extends NotificationProvider {
      */
     _statusMessageFactory = (status, monitorName) => {
         if (status === DOWN) {
-            return `🔴 [${monitorName}] went down\n`;
+            return `[${monitorName}] went down\n`;
         } else if (status === UP) {
-            return `### ✅ [${monitorName}] is back online\n`;
+            return `### [${monitorName}] is back online\n`;
         }
         return "Notification\n";
     };

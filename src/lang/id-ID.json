@@ -1402,7 +1402,7 @@
     "halopsa_password_desc": "Kata sandi untuk mengotentikasi webhook Halo PSA",
     "halopsa_setup_step2": "Konfigurasikan aksi runbook untuk memroses peringatan (mis. Buat Tiket)",
     "halopsa_setup_step3": "Salin URL Webhook dan tempelkan itu ke bidang teks di atas",
-    "halopsa_setup_step1": "Buat suatu Integration Runbook dalam HaloPSA(Configuration → Integrations → Integration Runbooks)",
+    "halopsa_setup_step1": "Buat suatu Integration Runbook dalam HaloPSA(Configuration -> Integrations -> Integration Runbooks)",
     "expectedTlsAlertDescription": "Pilih peringatan TLS yang Anda harap dikembalikan oleh server. Gunakan {code} untuk memverifikasi titik akhir mTLS menolak koneksi tanpa sertifikat klien. Lihat {link} untuk rinciannya.",
     "TLS Alerts": "Peringatan TLS",
     "Expected TLS Alert": "Peringatan TLS yang Diharapkan",

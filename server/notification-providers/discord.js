@@ -73,8 +73,8 @@ class Discord extends NotificationProvider {
             if (messageFormat === "minimalist") {
                 const content =
                     heartbeatJSON["status"] === DOWN
-                        ? "🔴 " + monitorJSON["name"] + " is down."
-                        : "🟢 " + monitorJSON["name"] + " is up.";
+                        ? "" + monitorJSON["name"] + " is down."
+                        : "" + monitorJSON["name"] + " is up.";
                 let payload = {
                     username: discordDisplayName,
                     content: content,
@@ -126,7 +126,7 @@ class Discord extends NotificationProvider {
                     username: discordDisplayName,
                     embeds: [
                         {
-                            title: "❌ Your service " + monitorJSON["name"] + " went down. ❌",
+                            title: "Your service " + monitorJSON["name"] + " went down.",
                             color: 16711680,
                             timestamp: heartbeatJSON["time"],
                             fields: [
@@ -187,7 +187,7 @@ class Discord extends NotificationProvider {
                     username: discordDisplayName,
                     embeds: [
                         {
-                            title: "✅ Your service " + monitorJSON["name"] + " is up! ✅",
+                            title: "Your service " + monitorJSON["name"] + " is up!",
                             color: 65280,
                             timestamp: heartbeatJSON["time"],
                             fields: [
