@@ -80,7 +80,7 @@ jobs:
             changed="$(git diff --name-only | grep -E '\.(js|vue)$' || true)"
             if [ -n "$changed" ]; then
               npm ci --no-audit --no-fund >/dev/null 2>&1 || true
-              echo "$changed" | xargs npx eslint --no-warn-ignored
+              echo "$changed" | xargs npx eslint
             fi
             git add -A
             git commit -m "chore: strip emoji from upstream files [strip-emoji]" || echo "nothing to strip"
@@ -91,13 +91,26 @@ jobs:
             git rebase --abort || true
           fi
 
-      - name: Open an issue when the rebase conflicts
+      - name: Report a rebase conflict
         if: steps.rebase.outputs.ok == 'false'
         run: |
-          latest="${{ steps.probe.outputs.latest }}"
-          body="Automatic rebase of the fork commits onto upstream **$latest** hit conflicts in:\n\n\`\`\`\n$(cat /tmp/conflicts.txt)\n\`\`\`\n\nResolve locally:\n\n\`\`\`bash\ngit fetch origin --tags\ngit rebase --onto $latest ${{ steps.probe.outputs.base }} feature/halopsa-tickets\n\`\`\`\nthen update \`.upstream-base\` and push with \`--force-with-lease\`."
-          gh issue create --repo "$GITHUB_REPOSITORY" --title "Upstream sync: rebase onto $latest needs manual resolution" --body "$(printf "$body")" --label "upstream-sync" || \
-          gh issue create --repo "$GITHUB_REPOSITORY" --title "Upstream sync: rebase onto $latest needs manual resolution" --body "$(printf "$body")"
+          latest="${{ steps.probe.outputs.latest }}"; base="${{ steps.probe.outputs.base }}"
+          {
+            echo "## Upstream sync: rebase onto $latest needs manual resolution"
+            echo
+            echo "Conflicting files:"
+            echo '```'; cat /tmp/conflicts.txt; echo '```'
+            echo
+            echo "Resolve locally, then push with --force-with-lease:"
+            echo '```bash'
+            echo "git fetch origin --tags"
+            echo "GIT_SEQUENCE_EDITOR=\"sed -i '/\\[strip-emoji\\]/d'\" git rebase -i --onto $latest $base feature/halopsa-tickets"
+            echo "echo $latest > .upstream-base && git commit -am 'chore: rebase fork onto upstream $latest'"
+            echo "node extra/strip-emoji.js && git add -A && git commit -m 'chore: strip emoji from upstream files [strip-emoji]'"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          # Issues are disabled on this fork; try anyway in case that changes, but never fail on it.
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "Upstream sync: rebase onto $latest needs manual resolution" --body-file "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           exit 1
 
       - name: Set up Node
