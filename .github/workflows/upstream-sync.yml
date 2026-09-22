@@ -156,5 +156,25 @@ jobs:
 
           **To ship after merging:** rebuild the image from the merged branch, load it onto CT 232, take the database backup, bump the tag in docker-compose.yml, then \`docker compose up -d\`. See HALOPSA_TICKETS.md.
           MD
-          gh pr create --repo "$GITHUB_REPOSITORY" --base "${{ github.event.repository.default_branch }}" --head "sync/upstream-$latest" \
-            --title "Upstream sync: rebase onto $latest" --body-file /tmp/pr-body.md
+          cat >> /tmp/pr-body.md <<MD
+
+          **How to land it (the branch is a rebase, so do not use the Merge button):** move the default branch to this branch's head.
+          \`\`\`bash
+          git fetch origin && git push --force-with-lease origin origin/sync/upstream-$latest:${{ github.event.repository.default_branch }}
+          \`\`\`
+          GitHub then marks this PR as merged.
+          MD
+          if gh pr create --repo "$GITHUB_REPOSITORY" --base "${{ github.event.repository.default_branch }}" --head "sync/upstream-$latest" \
+              --title "Upstream sync: rebase onto $latest" --body-file /tmp/pr-body.md; then
+            echo "PR opened."
+          else
+            # Organisation policy forbids Actions from creating PRs; the branch is pushed, so just point at it.
+            {
+              echo "## Upstream $latest is ready on branch sync/upstream-$latest"
+              echo
+              echo "Actions may not open pull requests in this organisation. Open it here:"
+              echo "https://github.com/$GITHUB_REPOSITORY/compare/${{ github.event.repository.default_branch }}...sync/upstream-$latest?expand=1"
+              echo
+              cat /tmp/pr-body.md
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
