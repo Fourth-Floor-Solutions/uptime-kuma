@@ -46,9 +46,9 @@ class YZJ extends NotificationProvider {
     statusToString(status) {
         switch (status) {
             case DOWN:
-                return "❌";
+                return "";
             case UP:
-                return "✅";
+                return "";
             default:
                 return status;
         }

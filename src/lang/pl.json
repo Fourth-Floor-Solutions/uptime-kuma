@@ -1293,7 +1293,7 @@
     "halopsa_field_monitor_id": "Unikalny identyfikator monitora (null dla powiadomień testowych) — użyj tej opcji, aby dopasować alerty do zgłoszeń",
     "halopsa_field_message": "Pełny komunikat alarmowy ze statusem i szczegółami",
     "halopsa_field_timestamp": "Znacznik czasu zdarzenia w formacie ISO 8601",
-    "halopsa_id_usage_hint": "💡 Wskazówka: Użyj monitor_id, aby niezawodnie dopasować alerty do zgłoszeń, oraz heartbeat_id, aby śledzić historię zdarzeń",
+    "halopsa_id_usage_hint": "Wskazówka: Użyj monitor_id, aby niezawodnie dopasować alerty do zgłoszeń, oraz heartbeat_id, aby śledzić historię zdarzeń",
     "halopsa_setup_step5": "Skonfiguruj runbook, aby używał monitor_id do dopasowywania alertów do istniejących zgłoszeń",
     "discordMessageFormat": "Format wiadomości",
     "smscTranslit": "smscTranslit",

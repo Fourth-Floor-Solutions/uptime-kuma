@@ -7,7 +7,7 @@
         @click="registerWebpush"
     >
         <div v-if="processing" class="spinner-border spinner-border-sm me-1"></div>
-        <span v-else-if="$parent.notification.subscription" class="me-1">✓</span>
+        <span v-else-if="$parent.notification.subscription" class="me-1"></span>
         {{ btnText }}
     </button>
 

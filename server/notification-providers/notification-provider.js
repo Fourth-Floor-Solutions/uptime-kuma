@@ -89,9 +89,9 @@ class NotificationProvider {
             monitorHostnameOrURL = this.extractAddress(monitorJSON);
         }
 
-        let serviceStatus = "⚠️ Test";
+        let serviceStatus = "Test";
         if (heartbeatJSON !== null) {
-            serviceStatus = heartbeatJSON["status"] === DOWN ? "🔴 Down" : "✅ Up";
+            serviceStatus = heartbeatJSON["status"] === DOWN ? "Down" : "Up";
         }
 
         const context = {

@@ -17,4 +17,4 @@
 4. Add your language at the end of `languageList`, format: `"zh-TW": "繁體中文 (台灣)",`
 5. Commit and make a pull request for me to approve
 
-If you do not have programming skills, let me know in [the issues section](https://github.com/louislam/uptime-kuma/issues). I will assist you. 😏
+If you do not have programming skills, let me know in [the issues section](https://github.com/louislam/uptime-kuma/issues). I will assist you.

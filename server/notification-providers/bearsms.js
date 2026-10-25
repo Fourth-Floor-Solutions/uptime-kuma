@@ -12,7 +12,7 @@ class BearSMS extends NotificationProvider {
 
         try {
             // BearSMS rejects messages containing emoji (astral characters) with error 200
-            const cleanMsg = msg.replaceAll("🔴 ", "").replaceAll("✅ ", "");
+            const cleanMsg = msg.replaceAll("", "").replaceAll("", "");
             const params = new URLSearchParams({
                 app: "ws",
                 u: notification.bearsmsUsername,

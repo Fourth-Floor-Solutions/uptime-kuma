@@ -23,7 +23,7 @@ class SMSPlanet extends NotificationProvider {
             let data = {
                 from: notification.smsplanetSenderName,
                 to: notification.smsplanetPhoneNumbers,
-                msg: msg.replace(/🔴/, "❌"),
+                msg: msg,
             };
 
             let response = await axios.post(url, data, config);

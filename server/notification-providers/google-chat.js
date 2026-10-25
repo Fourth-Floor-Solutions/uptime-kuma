@@ -58,8 +58,8 @@ class GoogleChat extends NotificationProvider {
             if (monitorJSON && heartbeatJSON) {
                 chatHeader["title"] =
                     heartbeatJSON["status"] === UP
-                        ? `✅ ${monitorJSON["name"]} is back online`
-                        : `🔴 ${monitorJSON["name"]} went down`;
+                        ? `${monitorJSON["name"]} is back online`
+                        : `${monitorJSON["name"]} went down`;
             }
 
             // always show msg
