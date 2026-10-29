@@ -1,0 +1,22 @@
+{
+  "_comment": "Fourth Floor fork: dependency versions raised above the upstream 2.x release to clear Dependabot alerts. Mirrors upstream master where it has moved; applied by extra/apply-deps.js after every upstream rebase.",
+  "dependencies": {
+    "tar": "~7.5.22",
+    "nodemailer": "~10.1.4",
+    "axios": "~0.34.0",
+    "liquidjs": "~10.29.0",
+    "mysql2": "~3.24.2",
+    "ws": "~8.21.3",
+    "@grpc/grpc-js": "~1.13.6",
+    "protobufjs": "~8.8.0",
+    "qs": "~6.16.0",
+    "redbean-node": "~0.4.0"
+  },
+  "devDependencies": {
+    "vue-i18n": "~11.4.14",
+    "dompurify": "~3.4.17",
+    "vite": "~6.4.4",
+    "@vitejs/plugin-vue": "~5.2.4",
+    "sass": "^1.101.0"
+  }
+}

@@ -112,6 +112,15 @@ build machine and `docker load` on the CT.
   `node extra/strip-emoji.js && git commit -am "chore: strip emoji [strip-emoji]"`.
   `node extra/strip-emoji.js --check` exits non-zero if anything would change.
 
+- **Dependency pins** (`extra/deps-pins.json`, applied by `extra/apply-deps.js`): the upstream 2.x line does
+  not take npm security updates (their policy: do not report dependency scan results upstream). The fork
+  raises the affected packages to the versions upstream master uses (tar 7, nodemailer 10, axios 0.34,
+  liquidjs 10.29, mysql2 3.24, ws 8.21, grpc 1.13, protobufjs 8, qs 6.16, redbean-node 0.4, vue-i18n 11.4,
+  dompurify 3.4.17, vite 6) and lets `npm audit fix` raise transitive ones. The result is one commit with
+  `[deps-audit]` in the subject; like `[strip-emoji]` the sync workflow drops it before rebasing and
+  re-creates it afterwards. Residual: the `@louislam/sqlite3` build-helper chain (node-pre-gyp -> tar 6)
+  is install-time only; master replaced it with better-sqlite3 in 3.0, a code change not mirrored here.
+
 ## HaloPSA agent for the integration
 
 Create a dedicated API agent (Configuration › Teams & Agents › Agents; "API agent", no licence) and
