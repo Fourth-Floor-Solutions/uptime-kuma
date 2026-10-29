@@ -118,8 +118,11 @@ build machine and `docker load` on the CT.
   liquidjs 10.29, mysql2 3.24, ws 8.21, grpc 1.13, protobufjs 8, qs 6.16, redbean-node 0.4, vue-i18n 11.4,
   dompurify 3.4.17, vite 6) and lets `npm audit fix` raise transitive ones. The result is one commit with
   `[deps-audit]` in the subject; like `[strip-emoji]` the sync workflow drops it before rebasing and
-  re-creates it afterwards. Residual: the `@louislam/sqlite3` build-helper chain (node-pre-gyp -> tar 6)
-  is install-time only; master replaced it with better-sqlite3 in 3.0, a code change not mirrored here.
+  re-creates it afterwards. Residuals after the 29 Oct 2026 pass (100 -> 31 alerts): the `@louislam/sqlite3` build-helper chain
+  (node-pre-gyp -> tar 6 / cacache / node-gyp / @tootallnate/once) runs only at `npm install`; master
+  replaced the package with better-sqlite3 in 3.0, a code change not mirrored here. `@azure/msal-node`
+  6.x stays because `@azure/identity` (via tedious, the MSSQL monitor) pins `^6.0.0` and the fix is 7.1.
+  The rest are dev-only tooling (playwright, testcontainers, eslint plugins) that never enters the image.
 
 ## HaloPSA agent for the integration
 
