@@ -37,6 +37,23 @@ export default defineConfig({
             map: false,
             plugins: [postcssRTLCSS],
         },
+        // Modern sass (Vite 6+) needs the repo root on the load path for the
+        // bare "node_modules/..." imports; mirrors upstream master's vite.config.mjs.
+        preprocessorOptions: {
+            scss: {
+                loadPaths: [process.cwd()],
+                quietDeps: true,
+                // Most of them are coming from bootstrap unfortunately
+                silenceDeprecations: [
+                    "import",
+                    "global-builtin",
+                    "if-function",
+                    "color-functions",
+                    "abs-percent",
+                    "function-units",
+                ],
+            },
+        },
     },
     build: {
         commonjsOptions: {

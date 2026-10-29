@@ -74,12 +74,16 @@ jobs:
           git config user.email "upstream-sync@users.noreply.github.com"
           base="${{ steps.probe.outputs.base }}"; latest="${{ steps.probe.outputs.latest }}"
           git checkout -b "sync/upstream-$latest"
-          # Drop the tree-wide "[strip-emoji]" commit(s) before replaying: they touch upstream
-          # lines and would conflict. The strip is re-applied by extra/strip-emoji.js below.
-          if GIT_SEQUENCE_EDITOR="sed -i '/\[strip-emoji\]/d'" git rebase -i --onto "$latest" "$base"; then
+          # Drop the generated "[strip-emoji]" and "[deps-audit]" commits before replaying: they
+          # touch upstream lines (and the lockfile) and would conflict. Both are re-created below.
+          if GIT_SEQUENCE_EDITOR="sed -i '/\[strip-emoji\]/d; /\[deps-audit\]/d'" git rebase -i --onto "$latest" "$base"; then
             echo "$latest" > .upstream-base
             git add .upstream-base
             git commit -m "chore: rebase fork onto upstream $latest"
+            # Dependency pins + lockfile refresh (extra/deps-pins.json), committed on its own
+            node extra/apply-deps.js
+            git add -A
+            git commit -m "chore: apply dependency pins and audit fixes [deps-audit]" || echo "no dependency changes"
             node extra/strip-emoji.js
             changed="$(git diff --name-only | grep -E '\.(js|vue)$' || true)"
             if [ -n "$changed" ]; then
