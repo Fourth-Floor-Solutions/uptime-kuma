@@ -46,23 +46,23 @@ const categoryList = {
         items: [],
     },
     newFeatures: {
-        title: "🆕 New Features",
+        title: "New Features",
         items: [],
     },
     improvements: {
-        title: "💇‍♀️ Improvements",
+        title: "Improvements",
         items: [],
     },
     bugFixes: {
-        title: "🐞 Bug Fixes",
+        title: "Bug Fixes",
         items: [],
     },
     securityFixes: {
-        title: "⬆️ Security Fixes",
+        title: "Security Fixes",
         items: [],
     },
     translationContributions: {
-        title: "🦎 Translation Contributions",
+        title: "Translation Contributions",
         items: [],
     },
     others: {

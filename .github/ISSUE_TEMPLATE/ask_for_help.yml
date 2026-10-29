@@ -1,5 +1,5 @@
 ---
-name: ❓ Ask for help
+name: Ask for help
 description: |
   Submit any question related to Uptime Kuma
 #title: "[Help]"
@@ -8,12 +8,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        🚫 **We kindly ask you to refrain from pinging maintainers unless absolutely necessary. Pings are reserved for critical/urgent issues that require immediate attention.**
+        **We kindly ask you to refrain from pinging maintainers unless absolutely necessary. Pings are reserved for critical/urgent issues that require immediate attention.**
 
   - type: checkboxes
     id: no-duplicate-question
     attributes:
-      label: ⚠️ Please verify that your question has not already been reported
+      label: Please verify that your question has not already been reported
       description: |
         To avoid duplicate reports, please search for any existing issues before submitting a new one.
         You can find the list of existing issues **[HERE](https://github.com/louislam/uptime-kuma/issues?q=is%3Aissue%20sort%3Acreated-desc%20)**.
@@ -25,7 +25,7 @@ body:
   - type: checkboxes
     id: security-policy
     attributes:
-      label: 🛡️ Security Policy
+      label: Security Policy
       description: |
         Please review and acknowledge the Security Policy before reporting any security-related issues or bugs.
         You can find the full Security Policy **[HERE](https://github.com/louislam/uptime-kuma/security/policy)**.
@@ -39,7 +39,7 @@ body:
     validations:
       required: true
     attributes:
-      label: 📝 Describe your problem
+      label: Describe your problem
       description: |
         Please walk us through it step by step.
         Include all important details and add screenshots where appropriate.
@@ -49,7 +49,7 @@ body:
   - type: textarea
     id: error-msg
     attributes:
-      label: 📝 Error Message(s) or Log
+      label: Error Message(s) or Log
       description: |
         Please copy and paste any relevant log output.
         This will be automatically formatted into code, so no need for backticks.
@@ -60,7 +60,7 @@ body:
   - type: input
     id: uptime-kuma-version
     attributes:
-      label: 🐻 Uptime-Kuma Version
+      label: Uptime-Kuma Version
       description: |
         What version of Uptime-Kuma are you running?
         Please do not provide Docker tags like `latest` or `1`.
@@ -72,7 +72,7 @@ body:
   - type: input
     id: operating-system
     attributes:
-      label: 💻 Operating System and Arch
+      label: Operating System and Arch
       description: |
         Which OS is your server/device running on? (For Replit, please do not report this bug)
       placeholder: |
@@ -83,7 +83,7 @@ body:
   - type: input
     id: browser-vendor
     attributes:
-      label: 🌐 Browser
+      label: Browser
       description: |
         Which browser are you running on? (For Replit, please do not report this bug)
       placeholder: |
@@ -94,7 +94,7 @@ body:
   - type: textarea
     id: deployment-info
     attributes:
-      label: 🖥️ Deployment Environment
+      label: Deployment Environment
       description: |
         Provide details about the deployment environment, including runtime components, databases, and storage configurations. This will
         help assess the infrastructure and identify any potential compatibility requirements.

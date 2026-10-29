@@ -33,7 +33,7 @@ class Pushbullet extends NotificationProvider {
                     type: "note",
                     title: "UptimeKuma Alert: " + monitorJSON["name"],
                     body:
-                        "[🔴 Down] " +
+                        "[Down] " +
                         heartbeatJSON["msg"] +
                         `\nTime (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
                 };
@@ -43,7 +43,7 @@ class Pushbullet extends NotificationProvider {
                     type: "note",
                     title: "UptimeKuma Alert: " + monitorJSON["name"],
                     body:
-                        "[✅ Up] " +
+                        "[Up] " +
                         heartbeatJSON["msg"] +
                         `\nTime (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
                 };

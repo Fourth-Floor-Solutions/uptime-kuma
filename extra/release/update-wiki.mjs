@@ -21,7 +21,7 @@ import path from "path";
 import { getVersionFromEnv } from "./lib.mjs";
 
 const WIKI_REPO = "louislam/uptime-kuma.wiki";
-const WIKI_FILE = "🆙-How-to-Update.md";
+const WIKI_FILE = "-How-to-Update.md";
 
 // Only the non-Docker `git checkout <version> --force` line carries the version
 const CHECKOUT_PATTERN = /(git checkout )\S+( --force)/;

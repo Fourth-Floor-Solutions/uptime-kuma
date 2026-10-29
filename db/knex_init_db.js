@@ -2,7 +2,7 @@ const { R } = require("redbean-node");
 const { log } = require("../src/util");
 
 /**
- * ⚠️⚠️⚠️⚠️⚠️⚠️ DO NOT ADD ANYTHING HERE!
+ * DO NOT ADD ANYTHING HERE!
  * IF YOU NEED TO ADD FIELDS, ADD IT TO ./db/knex_migrations
  * See ./db/knex_migrations/README.md for more information
  * @returns {Promise<void>}

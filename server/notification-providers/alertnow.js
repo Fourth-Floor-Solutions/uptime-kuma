@@ -19,12 +19,12 @@ class AlertNow extends NotificationProvider {
             let eventId = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
             if (heartbeatJSON && heartbeatJSON.status === UP) {
-                textMsg = `[${heartbeatJSON.name}] ✅ Application is back online`;
+                textMsg = `[${heartbeatJSON.name}] Application is back online`;
                 status = "close";
                 eventType = "INFO";
                 eventId += `_${heartbeatJSON.name.replace(/\s/g, "")}`;
             } else if (heartbeatJSON && heartbeatJSON.status === DOWN) {
-                textMsg = `[${heartbeatJSON.name}] 🔴 Application went down`;
+                textMsg = `[${heartbeatJSON.name}] Application went down`;
             }
 
             textMsg += ` - ${msg}`;

@@ -13,7 +13,7 @@ Uptime Kuma is an easy-to-use self-hosted monitoring tool.
 
 <img src="https://user-images.githubusercontent.com/1336778/212262296-e6205815-ad62-488c-83ec-a5b0d0689f7c.jpg" width="700" alt="Uptime Kuma Dashboard Screenshot" />
 
-## 🥔 Live Demo
+## Live Demo
 
 Try it!
 
@@ -21,7 +21,7 @@ Demo Server (Location: Frankfurt - Germany): <https://demo.kuma.pet/start-demo>
 
 It is a temporary live demo, all data will be deleted after 10 minutes. Sponsored by [Uptime Kuma Sponsors](https://github.com/louislam/uptime-kuma#%EF%B8%8F-sponsors).
 
-## ⭐ Features
+## Features
 
 - Monitoring uptime for HTTP(s) / TCP / HTTP(s) Keyword / HTTP(s) Json Query / Websocket / Ping / DNS Record / Push / Steam Game Server / Docker Containers
 - Fancy, Reactive, Fast UI/UX
@@ -35,9 +35,9 @@ It is a temporary live demo, all data will be deleted after 10 minutes. Sponsore
 - Proxy support
 - 2FA support
 
-## 🔧 How to Install
+## How to Install
 
-### 🐳 Docker Compose
+### Docker Compose
 
 ```bash
 mkdir uptime-kuma
@@ -51,7 +51,7 @@ Uptime Kuma is now running on all network interfaces (e.g. http://localhost:3001
 > [!WARNING]
 > File Systems like **NFS** (Network File System) are **NOT** supported. Please map to a local directory or volume.
 
-### 🐳 Docker Command
+### Docker Command
 
 ```bash
 docker run -d --restart=always -p 3001:3001 -v uptime-kuma:/app/data --name uptime-kuma louislam/uptime-kuma:2
@@ -65,15 +65,15 @@ If you want to limit exposure to localhost only:
 docker run ... -p 127.0.0.1:3001:3001 ...
 ```
 
-### 💪🏻 Non-Docker
+### Non-Docker
 
 Requirements:
 
 - Platform
-  - ✅ Major Linux distros such as Debian, Ubuntu, Fedora and ArchLinux etc.
-  - ✅ Windows 10 (x64), Windows Server 2012 R2 (x64) or higher
-  - ❌ FreeBSD / OpenBSD / NetBSD
-  - ❌ Replit / Heroku
+  - Major Linux distros such as Debian, Ubuntu, Fedora and ArchLinux etc.
+  - Windows 10 (x64), Windows Server 2012 R2 (x64) or higher
+  - FreeBSD / OpenBSD / NetBSD
+  - Replit / Heroku
 - [Node.js](https://nodejs.org/en/download/) >= 20.4
 - [Git](https://git-scm.com/downloads)
 - [pm2](https://pm2.keymetrics.io/) - For running Uptime Kuma in the background
@@ -112,25 +112,25 @@ If you need more options or need to browse via a reverse proxy, please read:
 
 <https://github.com/louislam/uptime-kuma/wiki/%F0%9F%94%A7-How-to-Install>
 
-## 🆙 How to Update
+## How to Update
 
 Please read:
 
 <https://github.com/louislam/uptime-kuma/wiki/%F0%9F%86%99-How-to-Update>
 
-## 🆕 What's Next?
+## What's Next?
 
 I will assign requests/issues to the next milestone.
 
 <https://github.com/louislam/uptime-kuma/milestones>
 
-## ❤️ Sponsors
+## Sponsors
 
 Thank you so much! (GitHub Sponsors will be updated manually. OpenCollective sponsors will be updated automatically, the list will be cached by GitHub though. It may need some time to be updated)
 
 <img src="https://uptime.kuma.pet/sponsors?v=6" alt="Uptime Kuma Sponsors" />
 
-## 🖼 More Screenshots
+## More Screenshots
 
 Light Mode:
 
@@ -157,11 +157,11 @@ Telegram Notification Sample:
 - Try to use WebSocket with SPA instead of a REST API.
 - Deploy my first Docker image to Docker Hub.
 
-If you love this project, please consider giving it a ⭐.
+If you love this project, please consider giving it a.
 
-## 🗣️ Discussion / Ask for Help
+## Discussion / Ask for Help
 
-⚠️ For any general or technical questions, please don't send me an email, as I am unable to provide support in that manner. I will not respond if you ask questions there.
+For any general or technical questions, please don't send me an email, as I am unable to provide support in that manner. I will not respond if you ask questions there.
 
 I recommend using Google, GitHub Issues, or Uptime Kuma's subreddit for finding answers to your question. If you cannot find the information you need, feel free to ask:
 

@@ -134,7 +134,7 @@ After it succeeds, check in this order:
 3. **Docker Hub**: `<version>`, `<version>-slim`, `<version>-rootless`, `<version>-slim-rootless`, plus the aliases `2`, `2-slim`, `2-rootless`, `next`, `next-slim`, `next-rootless` all point at the new build.
 4. **Node.js inside the images**: `docker run --rm --entrypoint node louislam/uptime-kuma:<version> -p process.versions.node` matches the base image (`louislam/uptime-kuma:base2`) on amd64, arm64 and arm/v7.
 5. **App version**: `package.json` on `2.5.X` is `<version>`; the server sends it over Socket.IO as `info.version` (`server/client.js`) and as `User-Agent: Uptime-Kuma/<version>` (`server/uptime-kuma-server.js`). There is no `/api/version` route.
-6. **Wiki**: `🆙-How-to-Update.md` must contain `git checkout <version> --force`. If the `update-wiki` job did not run, run `RELEASE_VERSION=<version> GITHUB_TOKEN=<token> node extra/release/update-wiki.mjs`.
+6. **Wiki**: `-How-to-Update.md` must contain `git checkout <version> --force`. If the `update-wiki` job did not run, run `RELEASE_VERSION=<version> GITHUB_TOKEN=<token> node extra/release/update-wiki.mjs`.
 7. **Demo server**: `npm run deploy-demo-server`; <https://uptime.kuma.pet> should report `<version>`.
 8. **Healthcheck**: if `extra/healthcheck.go` changed, rebuild `louislam/uptime-kuma:builder-go` (`npm run build-docker-builder-go`) before releasing.
 9. **`master`'s install pin**: the release's "Update to `<version>`" commit bumps `version` and the `setup` script on `2.5.X` only, so `master`'s `package.json` still has `"setup": "git checkout <previous version> ..."`. Bump that one line to `<version>` on `master`, otherwise `npm run setup` on master keeps installing the old release.
