@@ -21,7 +21,7 @@
 
         <div class="content">
             <div>
-                <strong>🐻 {{ $t("Page Not Found") }}</strong>
+                <strong>{{ $t("Page Not Found") }}</strong>
             </div>
 
             <div class="guide">
