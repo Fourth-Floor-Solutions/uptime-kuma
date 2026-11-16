@@ -22,12 +22,12 @@ class Splunk extends NotificationProvider {
             }
 
             if (heartbeatJSON.status === UP) {
-                const title = "Uptime Kuma Monitor ✅ Up";
+                const title = "Uptime Kuma Monitor Up";
                 return this.postNotification(notification, title, heartbeatJSON.msg, monitorJSON, "recovery");
             }
 
             if (heartbeatJSON.status === DOWN) {
-                const title = "Uptime Kuma Monitor 🔴 Down";
+                const title = "Uptime Kuma Monitor Down";
                 return this.postNotification(notification, title, heartbeatJSON.msg, monitorJSON, "trigger");
             }
         } catch (error) {

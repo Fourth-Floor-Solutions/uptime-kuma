@@ -17,9 +17,9 @@
         <h6 style="margin-bottom: 12px; font-weight: 600">{{ $t("Quick Setup Guide") }}:</h6>
         <ol style="margin-bottom: 0; padding-left: 20px; line-height: 1.8">
             <li>{{ $t("Open your Google Spreadsheet") }}</li>
-            <li>{{ $t("Go to Extensions → Apps Script") }}</li>
+            <li>{{ $t("Go to Extensions -> Apps Script") }}</li>
             <li>{{ $t("Paste the script code (see below)") }}</li>
-            <li>{{ $t("Click Deploy → New deployment → Web app") }}</li>
+            <li>{{ $t("Click Deploy -> New deployment -> Web app") }}</li>
             <li>{{ $t("Set 'Execute as: Me' and 'Who has access: Anyone'") }}</li>
             <li>{{ $t("Copy the web app URL and paste it above") }}</li>
         </ol>
