@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Apply the fork's dependency pins (extra/deps-pins.json) to package.json, refresh the
+ * Apply the fork's dependency pins and overrides (extra/deps-pins.json) to package.json, refresh the
  * lockfile, and let `npm audit fix` raise transitive packages within their allowed ranges.
  *
  * The result is committed as a single "[deps-audit]" commit that the upstream-sync workflow
@@ -31,6 +31,17 @@ for (const section of [ "dependencies", "devDependencies" ]) {
             changed.push(`${name} ${current} -> ${version}`);
             pkg[section][name] = version;
         }
+    }
+}
+
+// Overrides force transitive packages that a parent pins to a vulnerable range.
+const wantOverrides = pins.overrides || {};
+for (const [ name, spec ] of Object.entries(wantOverrides)) {
+    const current = (pkg.overrides || {})[name];
+    if (JSON.stringify(current) !== JSON.stringify(spec)) {
+        changed.push(`override ${name} ${JSON.stringify(current)} -> ${JSON.stringify(spec)}`);
+        pkg.overrides = pkg.overrides || {};
+        pkg.overrides[name] = spec;
     }
 }
 
