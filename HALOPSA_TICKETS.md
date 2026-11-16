@@ -118,11 +118,19 @@ build machine and `docker load` on the CT.
   liquidjs 10.29, mysql2 3.24, ws 8.21, grpc 1.13, protobufjs 8, qs 6.16, redbean-node 0.4, vue-i18n 11.4,
   dompurify 3.4.17, vite 6) and lets `npm audit fix` raise transitive ones. The result is one commit with
   `[deps-audit]` in the subject; like `[strip-emoji]` the sync workflow drops it before rebasing and
-  re-creates it afterwards. Residuals after the 29 Oct 2026 pass (100 -> 31 alerts): the `@louislam/sqlite3` build-helper chain
-  (node-pre-gyp -> tar 6 / cacache / node-gyp / @tootallnate/once) runs only at `npm install`; master
-  replaced the package with better-sqlite3 in 3.0, a code change not mirrored here. `@azure/msal-node`
-  6.x stays because `@azure/identity` (via tedious, the MSSQL monitor) pins `^6.0.0` and the fix is 7.1.
-  The rest are dev-only tooling (playwright, testcontainers, eslint plugins) that never enters the image.
+  re-creates it afterwards. Packages a parent pins to a vulnerable range are forced through
+  `overrides` in the same pins file (the script merges them into `package.json`): `tar` everywhere (the
+  `@louislam/sqlite3` install helpers node-pre-gyp / node-gyp / cacache asked for tar 6), `undici` 5 -> 6
+  (`@actions/github`, testcontainers 10), `uuid`, `minimatch` 9.0.3, `@tootallnate/once`, and `stylus` under
+  `postcss-styl`. Use plain or parent-nested override keys for scoped packages: npm 10 (the image's npm)
+  rejects the lockfile npm 11 writes for a `@scope/name@range` key. `@playwright/test` follows upstream
+  master (1.64); the runtime `playwright-core` stays on upstream's 1.39 to match the image's Chromium.
+  The `@testcontainers/*` 10.x modules stay: 11.x needs an explicit image argument the upstream tests omit.
+  Residuals after the 16 Nov 2026 pass (32 -> 1 alert): `fast-xml-parser` 5.8.0 (low, exact pin in
+  gamedig); the fix 5.12.0 was published 3 Nov 2026, inside the 14-day `min-release-age` in `.npmrc`, so
+  add `"gamedig": { "fast-xml-parser": "^5.12.0" }` to the overrides once it has aged. `npm audit` also
+  lists glob 9-14.0.1 / minimatch 7-11.0.0 (moderate, no Dependabot alert yet); the only fixes are new
+  majors that redbean-node, archiver and stylus do not accept.
 
 ## HaloPSA agent for the integration
 
