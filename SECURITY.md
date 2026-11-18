@@ -40,8 +40,8 @@ All versions are upgradable to the latest version.
 | next-slim       | :white_check_mark:                                                                    |
 | 2-rootless      | :white_check_mark:                                                                    |
 | 2-slim-rootless | :white_check_mark:                                                                    |
-| 1               | [⚠️ Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
-| 1-debian        | [⚠️ Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
-| latest          | [⚠️ Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
-| debian          | [⚠️ Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
-| All other tags  | ❌                                                                                    |
+| 1               | [Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
+| 1-debian        | [Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
+| latest          | [Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
+| debian          | [Deprecated](https://github.com/louislam/uptime-kuma/wiki/Migration-From-v1-To-v2) |
+| All other tags  |                                                                                    |

@@ -11,7 +11,7 @@ class GtxMessaging extends NotificationProvider {
         const okMsg = "Sent Successfully.";
 
         // The UP/DOWN symbols will be replaced with `???` by gtx-messaging
-        const text = msg.replaceAll("🔴 ", "").replaceAll("✅ ", "");
+        const text = msg.replaceAll("", "").replaceAll("", "");
 
         try {
             let config = this.getAxiosConfigWithProxy({});
