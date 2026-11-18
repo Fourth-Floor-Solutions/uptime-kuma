@@ -122,7 +122,7 @@ function createSftpServer(opts = {}) {
 
         server.on("error", reject);
 
-        // Port 0 → OS picks a free port
+        // Port 0 -> OS picks a free port
         server.listen(0, "127.0.0.1", () => {
             const { port } = server.address();
             resolve({

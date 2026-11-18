@@ -28,7 +28,7 @@ class LunaSea extends NotificationProvider {
                 let downdata = {
                     title: "UptimeKuma Alert: " + monitorJSON["name"],
                     body:
-                        "[🔴 Down] " +
+                        "[Down] " +
                         heartbeatJSON["msg"] +
                         `\nTime (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
                 };
@@ -40,7 +40,7 @@ class LunaSea extends NotificationProvider {
                 let updata = {
                     title: "UptimeKuma Alert: " + monitorJSON["name"],
                     body:
-                        "[✅ Up] " +
+                        "[Up] " +
                         heartbeatJSON["msg"] +
                         `\nTime (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
                 };

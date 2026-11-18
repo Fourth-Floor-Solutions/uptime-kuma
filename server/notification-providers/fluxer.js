@@ -58,8 +58,8 @@ class Fluxer extends NotificationProvider {
             if (messageFormat === "minimalist") {
                 const content =
                     heartbeatJSON["status"] === DOWN
-                        ? "🔴 " + monitorJSON["name"] + " is down."
-                        : "🟢 " + monitorJSON["name"] + " is up.";
+                        ? "" + monitorJSON["name"] + " is down."
+                        : "" + monitorJSON["name"] + " is up.";
                 let payload = {
                     username: fluxerDisplayName,
                     content: content,
@@ -101,7 +101,7 @@ class Fluxer extends NotificationProvider {
                     username: fluxerDisplayName,
                     embeds: [
                         {
-                            title: "❌ Your service " + monitorJSON["name"] + " went down. ❌",
+                            title: "Your service " + monitorJSON["name"] + " went down.",
                             color: 16711680,
                             fields: [
                                 {
@@ -155,7 +155,7 @@ class Fluxer extends NotificationProvider {
                     username: fluxerDisplayName,
                     embeds: [
                         {
-                            title: "✅ Your service " + monitorJSON["name"] + " is up! ✅",
+                            title: "Your service " + monitorJSON["name"] + " is up!",
                             color: 65280,
                             fields: [
                                 {

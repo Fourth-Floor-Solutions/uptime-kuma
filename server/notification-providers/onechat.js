@@ -34,7 +34,7 @@ class OneChat extends NotificationProvider {
                     bot_id: notification.botId,
                     type: "text",
                     message: `UptimeKuma Alert:
-[🔴 Down]
+[Down]
 Name: ${monitorJSON["name"]}
 ${heartbeatJSON["msg"]}
 Time (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
@@ -46,7 +46,7 @@ Time (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
                     bot_id: notification.botId,
                     type: "text",
                     message: `UptimeKuma Alert:
-[🟢 Up]
+[Up]
 Name: ${monitorJSON["name"]}
 ${heartbeatJSON["msg"]}
 Time (${heartbeatJSON["timezone"]}): ${heartbeatJSON["localDateTime"]}`,
